@@ -59,7 +59,7 @@ def _b62_decode(encoded: str) -> int:
     """
     Decodes a base 62 string into an integer.
 
-    :param n: A base 62 string
+    :param encoded: A base 62 string
     :return: The integer represented by the input string
     """
     l, i, v = len(encoded), 0, 0
