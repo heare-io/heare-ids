@@ -20,6 +20,7 @@ import datetime
 import random
 import typing
 
+
 B62_CHARSET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 _VALID_GENERATIONS = set('0')
@@ -70,15 +71,15 @@ def _b62_decode(encoded: str) -> int:
     return v
 
 
-def new(prefix: str, generation='0', timestamp=None, entropy=10) -> str:
+def new(prefix: str, generation: str = '0', timestamp: typing.Union[float, None] = None, entropy: typing.Union[str,int] = 10) -> str:
     """
     Generates a new token with a given prefix, generation, timestamp, and entropy.
     Throws a ValueError if the given generation is not valid.
 
     :param prefix: A string representing the prefix of the token
     :param generation: A string representing the generation of the token
-    :param timestamp: A datetime to use in the token
-    :param entropy: Integer determining size of entropy part of token
+    :param timestamp: A float timestamp to use in the token
+    :param entropy: Integer determining size of entropy part of token, or string to use as entropy
     :return: A string representing the generated token
     """
     if generation not in _VALID_GENERATIONS:
@@ -86,7 +87,13 @@ def new(prefix: str, generation='0', timestamp=None, entropy=10) -> str:
     ts = timestamp or datetime.datetime.now().timestamp()
     ts = int(ts)
     ts_encoded = _b62_encode(ts).zfill(8)
-    return f"{prefix}_{generation}{ts_encoded}{''.join(random.sample(B62_CHARSET, entropy))}"
+    if isinstance(entropy, int):
+        entropy_str = ''.join(random.sample(B62_CHARSET, entropy))
+    elif isinstance(entropy, str):
+        entropy_str = entropy
+    else:
+        raise ValueError("Entropy must be either an integer or a string")
+    return f"{prefix}_{generation}{ts_encoded}{entropy_str}"
 
 
 def is_valid(token: str) -> bool:
@@ -139,7 +146,7 @@ def parse(token: str) -> typing.Union[ParsedToken, None]:
         prefix=prefix,
         generation=suffix[0],
         timestamp=float(_b62_decode(ts_part.lstrip('0'))),
-        entropy=suffix[10:]
+        entropy=suffix[9:]
     )
 
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "heare-ids"
-version = "0.1.0"
+version = "0.1.2"
 description = "Stripe-like tokens in pure-python with no dependencies."
 authors = ["Sean Fitzgerald <sean@fitzgeralds.me>"]
 license = "MIT"
